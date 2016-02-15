@@ -10,24 +10,31 @@ $(document).ready(function() {
 
 	$("#short").click(function(){
 
-		longurl = $("#textInput").val(); 
-		var myKeys = new Keys();
-		gapi.client.setApiKey(myKeys.getAPIKey());
+		var longurl = $("#textInput").val(); 
 
-		gapi.client.load('urlshortener', 'v1', function() {
-		    var request = gapi.client.urlshortener.url.insert({
-		        'resource': {
-		            'longUrl': longurl
-		        }
-		    });
-		    var resp = request.execute(function(resp) {
-		        if (resp.error) {
-		            $("#show").html('Error. ' + resp.error.message);
-		        } else {
-		            $("#result").html("Short URL is: <b>" + resp.id+"</b>");
-		        }
-		    });
-	    });                   
+		if( $("#textInput").val() != ""){
+			var myKeys = new Keys();
+			gapi.client.setApiKey(myKeys.getAPIKey());
+
+			gapi.client.load('urlshortener', 'v1', function() {
+			    var request = gapi.client.urlshortener.url.insert({
+			        'resource': {
+			            'longUrl': longurl
+			        }
+			    });
+			    var resp = request.execute(function(resp) {
+			        if (resp.error) {
+			            $("#show").html('Error. ' + resp.error.message);
+			        } else {
+			            $("#result").html("Short URL is: <input type='text' id='copyInput'> Ctrl+c to copy");
+			            $("#copyInput").val(resp.id);
+						$("#copyInput").select();
+			        }
+			    });
+		    }); 
+		}else{
+			$("#result").html("write some URL please");
+		}		                
 	});
 
 
